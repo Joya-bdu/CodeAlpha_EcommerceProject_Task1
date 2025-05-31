@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .welcome-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin-top: 30px;
+            color: #2c3e50;
+        }
+
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        .top-right-buttons a,
+        .top-right-buttons button {
+            padding: 6px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+        }
+
+        .cart-btn {
+            background-color: #8e44ad;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 20px;
+            width: 240px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .product-price {
+            color: #27ae60;
+            font-size: 16px;
+        }
+
+        .product-card a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .product-card a:hover {
+            background-color: #2980b9;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Welcome title in center -->
+    <h1 class="welcome-title">Welcome to Our Shop</h1>
+
+    <form method="GET" action="">
+    <input type="text" name="q" placeholder="Search..." value="{{ search_query }}">
+    
+    <select name="category">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+    <!-- Logout and Cart buttons in top-right -->
+    <div class="top-right-buttons">
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'view_cart' %}" class="cart-btn">View Cart</a>
+    </div>
+
+    <!-- Products -->
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/200x180?text=No+Image" alt="No Image">
+            {% endif %}
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">{{ product.price }} Tk</div>
+            <a href="{% url 'product_detail' product.id %}">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

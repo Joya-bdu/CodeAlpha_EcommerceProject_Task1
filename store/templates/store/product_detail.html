@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 40px;
+        }
+
+        .product-detail {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .product-detail img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h2>{{ product.name }}</h2>
+<img src="{{ product.image.url }}" width="200" alt="{{ product.name }}">
+<p>{{ product.description }}</p>
+<p>Price: {{ product.price }} Tk</p>
+<a href="{% url 'home' %}">Back</a>
+<a href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<h1>Order Summary</h1>
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Product</th><th>Quantity</th><th>Price</th><th>Total</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.price }} Tk</td>
+        <td>{{ item.total_price }} Tk</td>
+    </tr>
+    {% endfor %}
+</table>
+<h3>Total: {{ total }} Tk</h3>
+
+<form method="POST">{% csrf_token %}
+    <button type="submit">Place Order</button>
+</form>
+<a href="{% url 'view_cart' %}">Back to Cart</a>

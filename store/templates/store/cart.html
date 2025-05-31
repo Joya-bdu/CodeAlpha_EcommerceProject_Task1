@@ -1,0 +1,86 @@
+<h1>Your Cart</h1>
+{% if cart_items %}
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Action</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>
+            <input type="number" class="quantity-input" data-cart-item-id="{{ item.id }}" value="{{ item.quantity }}" min="1" style="width: 60px;">
+        </td>
+        <td>{{ item.product.price }} Tk</td>
+        <td class="item-total">{{ item.total_price }} Tk</td>
+        <td>
+          <a href="{% url 'remove_from_cart' item.id %}" onclick="return confirm('Are you sure you want to remove this item?');">Remove</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3 id="cart-total">Total: {{ total }} Tk</h3>
+
+<a href="{% url 'checkout' %}">Checkout</a> | <a href="{% url 'home' %}">Continue Shopping</a>
+
+<script>
+  document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+      const cartItemId = this.dataset.cartItemId;
+      const quantity = parseInt(this.value);
+
+      if(quantity < 1) {
+        alert('Quantity must be at least 1');
+        this.value = 1;
+        return;
+      }
+
+      fetch("{% url 'update_cart_quantity' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ cart_item_id: cartItemId, quantity: quantity })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.status === 'success'){
+          alert('Quantity updated!');
+          // শুধু সেই row এর total price আপডেট করুন
+          const row = this.closest('tr');
+          row.querySelector('.item-total').textContent = data.item_total + ' Tk';
+
+          // মোট টোটাল আপডেট করুন
+          document.querySelector('#cart-total').textContent = 'Total: ' + data.cart_total + ' Tk';
+        } else {
+          alert(data.message);
+        }
+      });
+    });
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+</script>
+
+{% else %}
+<p>Your cart is empty.</p>
+<a href="{% url 'home' %}">Shop now</a>
+{% endif %}
